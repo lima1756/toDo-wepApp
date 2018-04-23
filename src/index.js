@@ -9,6 +9,7 @@ import './styles/styles.scss'; // Yep, that's right. You can import SASS/CSS fil
 import '../node_modules/spectre.css/dist/spectre.min.css';
 import '../node_modules/spectre.css/dist/spectre-exp.min.css';
 import '../node_modules/spectre.css/dist/spectre-icons.min.css';
+//import '../otherFiles/_redirects';
 require('./favicon.ico'); // Tell webpack to load favicon.ico
 
 render(
