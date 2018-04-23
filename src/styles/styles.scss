@@ -1,0 +1,35 @@
+body, html, #app, .fullHeight {
+  height: 100%;
+}
+
+.bg {
+  background: url("../images/main.jpg") no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  height: 100%;
+}
+
+
+.centered-table{
+  display: table;
+  width: 100%;
+  height: 100%;
+}
+
+.content-table{
+  display: table-cell;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.mainTitle{
+  font-weight: 800;
+  font-size: 4.5rem;
+}
+
+#EnterBtn{
+  height: 2.5rem;
+  font-size: 2rem;
+}
