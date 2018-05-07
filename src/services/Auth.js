@@ -3,6 +3,9 @@ import history from './history';
 import * as AuthCons from '../constants/auth0';
 
 class Auth {
+
+  userProfile;
+
   auth0 = new auth0.WebAuth({
     domain: AuthCons.domain,
     clientID: AuthCons.clientID,
@@ -18,6 +21,10 @@ class Auth {
     this.handleAuthentication = this.handleAuthentication.bind(this);
     this.isAuthenticated = this.isAuthenticated.bind(this);
     this.getProfile = this.getProfile.bind(this);
+    if(this.isAuthenticated())
+    {
+      this.getProfile(()=>{});
+    }
   }
 
   handleAuthentication() {
@@ -64,9 +71,7 @@ class Auth {
       throw new Error('No Access Token found');
     }
     return accessToken;
-  }
-
-  userProfile;
+  }  
   
   getProfile(cb) {
     let accessToken = this.getAccessToken();

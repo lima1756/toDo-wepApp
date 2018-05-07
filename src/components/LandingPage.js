@@ -1,25 +1,22 @@
 import React from 'react';
 import Auth from '../services/Auth.js';
+import PropTypes from 'prop-types';
 
 class LandingPage extends React.Component {
     
     constructor(props){
         super(props);
         this.enterButton = this.enterButton.bind(this);
-        this.closeModal = this.closeModal.bind(this);
+        this.state = {auth:new Auth()};
     }
 
     enterButton(){
-        //TODO if already login enter home, if not show modal
-        //console.log("Login");
-        const auth = new Auth();
-        auth.login();
-        // Show modal
-        //document.getElementById("logModal").classList.add("active");
-    }
-
-    closeModal(){
-        document.getElementById("logModal").classList.remove("active");
+        const { userProfile } = this.state.auth;
+        if (!userProfile) {
+            this.state.auth.login();
+        } else {
+            this.props.history.push(`/ToDO`)
+        }
     }
 
     render() {
@@ -34,34 +31,14 @@ class LandingPage extends React.Component {
                 </div>
             </div>
             {/* TODO enter more content to the landing page */}
-            <div className="modal" id="logModal">
-                <a href="#close" className="modal-overlay" aria-label="Close"></a>
-                <div className="modal-container">
-                    <div className="modal-header">
-                        <a href="#close" className="btn btn-clear float-right" aria-label="Close" onClick={this.closeModal}></a>
-
-                    </div>
-                    <div className="modal-body">
-                        <div className="content">
-                            <div className="columns">
-                                <div className="column">
-                                    
-                                </div>
-                                <div className="divider-vert" data-content="OR"></div>
-                                <div className="column">
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="modal-footer">
-                        
-                    </div>
-                </div>
-            </div>
         </div>
     );
     }
 }
   
+LandingPage.propTypes = {
+    history: PropTypes.object,
+    auth: PropTypes.object,
+}
+
 export default LandingPage;
