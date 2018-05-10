@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const List = ({profile}) => {
-    return(<div>{profile.name}</div>);
+const List = ({items}) => {
+    return(<div></div>);
 }
 
 List.propTypes = {
-    profile: PropTypes.object.isRequired
+    items: PropTypes.object.isRequired
 };
 
 export default List;

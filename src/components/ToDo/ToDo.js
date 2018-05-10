@@ -4,12 +4,13 @@ import SideBar from './common/SideBar';
 import NavBar from './common/NavBar';
 import ToDoList from './ToDoList';
 import {FireBase} from '../../services/FireBase';
-
+import GphApiClient from 'giphy-js-sdk-core';
 class ToDo extends React.Component {
     
+
     constructor(props){
         super(props);
-        this.state = {profile:{}, data:{}, userId:""};
+        this.state = {profile:{}, data:{}, userId:"", listId:""};
         this.logOut = this.logOut.bind(this);
         this.newList = this.newList.bind(this);
         this.changeListName = this.changeListName.bind(this);
@@ -20,6 +21,9 @@ class ToDo extends React.Component {
         this.changeItemState = this.changeItemState.bind(this);
         this.addItemFile = this.addItemFile.bind(this);
         this.removeItemFile = this.removeItemFile.bind(this);
+        this.getListArray = this.getListArray.bind(this);
+        this.firstList = this.firstList.bind(this);
+        this.client = GphApiClient("MimXRX9ee3mwSRs7p49L9w79iegso7dg");
     }
 
     goTo(route) {
@@ -42,16 +46,16 @@ class ToDo extends React.Component {
                 this.setState({ profile: userProfile, userId: userProfile.sub });
                 this.startFireBase(userProfile.sub);
             }
-            
         }
+ 
+        
     }
 
     componentWillUnmount(){
         FireBase.removeBinding(this.data);
     }
 
-    componentDidMount(){
-    }
+    
 
     render() {
         const {profile} = this.state;
@@ -59,8 +63,13 @@ class ToDo extends React.Component {
             <div className='fullHeight mainContainer'>
                 <NavBar showSideBar={this.showSideBar}/>
                 <a className="closeSideBar" href="" id="closeSideBar" onClick={this.hideSideBar}></a>
+                
                 <SideBar profile={profile} newList={this.newList} removeList={this.removeList} changeListName={this.changeListName} logOut={this.logOut}/>
-                <ToDoList list={profile} newItem={this.newItem} removeItem={this.removeItem} changeItem={this.changeItem}/>
+                <div className='sideBar sideBar-screenSize non-fixed' ></div>
+                <div className="list">
+                    { this.state.data[this.state.listId] && <h1>{this.state.data[this.state.listId].name} List</h1>}
+                    <ToDoList list={this.getListArray()} newItem={this.newItem} removeItem={this.removeItem} changeItemName={this.changeItemName} changeItemState={this.changeItemState} addItemFile={this.addItemFile} removeItemFile={this.removeItemFile}/>
+                </div>
             </div>
         );
     }
@@ -87,6 +96,18 @@ class ToDo extends React.Component {
         this.setState({data});
     }
 
+    firstList(){
+        const data = Object.assign({}, this.state.data);
+        const id = 0;
+        data[id] = {
+            id: id,
+            name: "To-Do",
+            items: {}
+        };
+        this.setState({data});
+    }
+
+
     removeList(id){
         const data = Object.assign({}, this.state.data);
         data[id] = null;
@@ -103,51 +124,66 @@ class ToDo extends React.Component {
         this.setState({data});
     }
 
-    newItem(listId, name){
+    newItem(name){
         const data = Object.assign({}, this.state.data);
         const itemId = Date.now();
-        data[listId][itemId] = {
+        data[this.state.listId][itemId] = {
             id: itemId,
             name: name,
             state: false
         };
-        this.setState({data});
+        this.setState({data}, ()=>{window.scrollTo(0,document.body.scrollHeight)});
+        
     }
 
-    removeItem(listId, itemId){
+    removeItem(itemId){
         const data = Object.assign({}, this.state.data);
-        data[listId][itemId] = null;
+        data[this.state.listId][itemId] = null;
         this.setState({data});
     }
 
-    changeItemName(listId, itemId, newName){
+    changeItemName(itemId, newName){
         const data = Object.assign({}, this.state.data);
-        data[listId][itemId].name = newName;
+        data[this.state.listId][itemId].name = newName;
         this.setState({data});
     }
 
-    addItemFile(listId, itemId, fileDirectory)
+    addItemFile(itemId, fileDirectory)
     {
         const data = Object.assign({}, this.state.data);
         const fileId = Date.now();
-        data[listId][itemId][fileId] = {
+        data[this.state.listId][itemId][fileId] = {
             id: fileId,
             fileDirectory: fileDirectory
         };
         this.setState({data});
     }
 
-    removeItemFile(listId, itemId, fileId){
+    removeItemFile(itemId, fileId){
         const data = Object.assign({}, this.state.data);
-        data[listId][itemId][fileId] = null;
+        data[this.state.listId][itemId][fileId] = null;
         this.setState({data});
     }
 
-    changeItemState(listId, itemId)
+    changeItemState(itemId, state)
     {
         const data = Object.assign({}, this.state.data);
-        data[listId][itemId].state = !data[listId][itemId].state;
-        this.setState({data});
+        data[this.state.listId][itemId].state = state;
+        if(state)
+        {
+            this.client.random('gifs', {"tag":"cats", "rating":"pg"})
+            .then((response) => {
+                data[this.state.listId][itemId].gif = response.data.images.fixed_height_downsampled.gif_url;
+                this.setState({data});       
+            })   
+        
+        }
+        else{
+            data[this.state.listId][itemId].gif = null;
+            this.setState({data});
+        }
+        
+        
     }
 
     logOut(){
@@ -158,8 +194,26 @@ class ToDo extends React.Component {
         this.data = FireBase.syncState(userId, {
             context: this,
             state: "data",
-            defaultValue: null
-        });
+            defaultValue: null,
+            then: ()=>{
+                if(this.state.data[0]==null)
+                    this.firstList();
+                this.setState({listId:this.state.data[0].id})
+            }
+        });        
+    }
+
+    getListArray(){
+        let arr = [];
+        if(this.state.data!=null){
+            for(let key in this.state.data[this.state.listId]){
+                if(key!="id" && key!="name")
+                {
+                    arr.push(this.state.data[this.state.listId][key]);
+                }
+            }
+        }
+        return arr;
     }
     
 }
