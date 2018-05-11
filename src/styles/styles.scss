@@ -82,7 +82,7 @@ body, html, #app, .fullHeight {
     opacity: 1;
     visibility: visible;
   }
-  .sideBar-screenSize{
+  .sideBar-screenSize, .sideBar.non-fixed{
     transform: translateX(-100%);
     position: fixed;
   }
@@ -325,4 +325,181 @@ body, html, #app, .fullHeight {
 
 .item-container{
   margin: 1rem 0;
+}
+
+.list-item{
+  margin: .5rem;
+  font-weight: bold;
+  span{
+    float: right;
+    i{
+      margin: 0 .2rem;
+      &.icon-cross{
+        color:red;
+      }
+    }
+  }
+}
+
+.new-list{
+  margin: .5rem;
+}
+
+.new-list, .list-item{
+  input[type=submit], .hidden{
+    display:none;
+  }
+
+  .field{
+    --uiFieldPlaceholderColor: var(--fieldPlaceholderColor, #767676);
+  }
+
+  .field__input{ 
+    background-color: transparent;
+    border-radius: 0;
+    border: none;
+    
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    
+    font-family: inherit;
+    font-size: 1em;
+  }
+
+  .field__input:focus::-webkit-input-placeholder{
+    color: var(--uiFieldPlaceholderColor);
+  }
+
+  .field__input:focus::-moz-placeholder{
+    color: var(--uiFieldPlaceholderColor);
+    opacity: 1;
+  }
+
+
+  .field{
+    display: inline-block;
+    width: 100%;
+  }
+
+  .field__input{ 
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .field_animated{
+    --uiFieldHeight: var(--fieldHeight, 40px);  
+    --uiFieldBorderWidth: var(--fieldBorderWidth, 2px);
+    --uiFieldBorderColor: var(--fieldBorderColor);
+    
+    --uiFieldFontSize: var(--fieldFontSize, 1em);
+    --uiFieldHintFontSize: var(--fieldHintFontSize, 1em);
+
+    --uiFieldPaddingRight: var(--fieldPaddingRight, 15px);
+    --uiFieldPaddingBottom: var(--fieldPaddingBottom, 15px);
+    --uiFieldPaddingLeft: var(--fieldPaddingLeft, 15px);   
+  
+    position: relative;
+    box-sizing: border-box;
+    font-size: var(--uiFieldFontSize);
+    padding-top: 1em;  
+  }
+
+  .field_animated .field__input{
+    height: var(--uiFieldHeight);
+    padding: 0 var(--uiFieldPaddingRight) 0 var(--uiFieldPaddingLeft);
+    border-bottom: var(--uiFieldBorderWidth) solid var(--uiFieldBorderColor);  
+  }
+
+  .field_animated .field__input::-webkit-input-placeholder{
+    opacity: 0;
+    transition: opacity .2s ease-out;
+  }
+
+  .field_animated .field__input::-moz-placeholder{
+    opacity: 0;
+    transition: opacity .2s ease-out;
+  }
+
+  .field_animated .field__input:focus{
+    outline: none;
+  }
+
+  .field_animated .field__input:not(:placeholder-shown) ~ .field__label-wrap .field__label{
+    opacity: 0;
+    bottom: var(--uiFieldPaddingBottom);
+  }
+
+  .field_animated .field__input:focus::-webkit-input-placeholder{
+    opacity: 1;
+    transition-delay: .2s;
+  }
+
+  .field_animated .field__input:focus::-moz-placeholder{
+    opacity: 1;
+    transition-delay: .2s;
+  }
+
+  .field_animated .field__label-wrap{
+    box-sizing: border-box;
+    width: 100%;
+    height: var(--uiFieldHeight);	
+    
+    pointer-events: none;
+    cursor: text;
+
+    position: absolute;
+    bottom: 0;
+    left: 0;
+  }
+
+  .field_animated .field__label{
+    position: absolute;
+    left: var(--uiFieldPaddingLeft);
+    bottom: var(--uiFieldPaddingBottom);
+    
+    line-height: 1;
+    font-size: var(--uiFieldHintFontSize);
+    
+    pointer-events: none;
+    transition: bottom .2s cubic-bezier(0.9,-0.15, 0.1, 1.15), opacity .2s ease-out;
+    will-change: bottom, opacity;
+  }
+
+  .field_animated .field__input:focus ~ .field__label-wrap .field__label{
+    opacity: 1;
+    bottom: var(--uiFieldHeight);
+  }
+
+  .field_a2 .field__label-wrap:after{
+    content: "";
+    box-sizing: border-box;
+    width: 0;
+    height: var(--uiFieldBorderWidth);
+    background-color: var(--fieldBorderColorActive);
+    
+    position: absolute;
+    bottom: 0;
+    left: 0;  
+    
+    will-change: width;
+    transition: width .285s ease-out;
+  }
+
+  .field_a2 .field__input:focus ~ .field__label-wrap:after{
+    width: 100%;
+  }
+
+  .field{
+    --fieldBorderColor: #D1C4E9;
+    --fieldBorderColorActive: #673AB7;
+  }
+}
+
+.uploader{
+  margin:1rem 0 ;
+}
+
+.remove-file{
+  color:red;
 }

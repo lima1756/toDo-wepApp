@@ -21,8 +21,10 @@ class ToDo extends React.Component {
         this.changeItemState = this.changeItemState.bind(this);
         this.addItemFile = this.addItemFile.bind(this);
         this.removeItemFile = this.removeItemFile.bind(this);
-        this.getListArray = this.getListArray.bind(this);
+        this.getItemsArray = this.getItemsArray.bind(this);
         this.firstList = this.firstList.bind(this);
+        this.getListArray = this.getListArray.bind(this);
+        this.selectList = this.selectList.bind(this);
         this.client = GphApiClient("MimXRX9ee3mwSRs7p49L9w79iegso7dg");
     }
 
@@ -31,6 +33,7 @@ class ToDo extends React.Component {
     }
 
     componentWillMount(){
+        
         const { isAuthenticated } = this.props.auth;
         if(!isAuthenticated()){
             this.goTo("");
@@ -64,11 +67,12 @@ class ToDo extends React.Component {
                 <NavBar showSideBar={this.showSideBar}/>
                 <a className="closeSideBar" href="" id="closeSideBar" onClick={this.hideSideBar}></a>
                 
-                <SideBar profile={profile} newList={this.newList} removeList={this.removeList} changeListName={this.changeListName} logOut={this.logOut}/>
+                <SideBar selectedList={Number(this.state.listId)} profile={profile} newList={this.newList} removeList={this.removeList} changeListName={this.changeListName} logOut={this.logOut} lists={this.getListArray()} selectList={this.selectList}/>
                 <div className='sideBar sideBar-screenSize non-fixed' ></div>
                 <div className="list">
-                    { this.state.data[this.state.listId] && <h1>{this.state.data[this.state.listId].name} List</h1>}
-                    <ToDoList list={this.getListArray()} newItem={this.newItem} removeItem={this.removeItem} changeItemName={this.changeItemName} changeItemState={this.changeItemState} addItemFile={this.addItemFile} removeItemFile={this.removeItemFile}/>
+                    { this.state.data && this.state.data[this.state.listId] && <h1>{this.state.data[this.state.listId].name} List</h1>}
+                    <div className="divider"></div>
+                    <ToDoList list={this.getItemsArray()} newItem={this.newItem} removeItem={this.removeItem} changeItemName={this.changeItemName} changeItemState={this.changeItemState} addItemFile={this.addItemFile} removeItemFile={this.removeItemFile}/>
                 </div>
             </div>
         );
@@ -94,6 +98,7 @@ class ToDo extends React.Component {
             items: {}
         };
         this.setState({data});
+        this.setState({listId:id});
     }
 
     firstList(){
@@ -112,6 +117,10 @@ class ToDo extends React.Component {
         const data = Object.assign({}, this.state.data);
         data[id] = null;
         this.setState({data});
+        for(let key in this.state.data){
+            this.setState({listId:key});
+            break;
+        }
     }
 
     changeListName(id, name){
@@ -148,13 +157,14 @@ class ToDo extends React.Component {
         this.setState({data});
     }
 
-    addItemFile(itemId, fileDirectory)
+    addItemFile(itemId, fileName, fileDirectory)
     {
         const data = Object.assign({}, this.state.data);
         const fileId = Date.now();
         data[this.state.listId][itemId][fileId] = {
             id: fileId,
-            fileDirectory: fileDirectory
+            fileDirectory: fileDirectory,
+            fileName: fileName
         };
         this.setState({data});
     }
@@ -196,14 +206,14 @@ class ToDo extends React.Component {
             state: "data",
             defaultValue: null,
             then: ()=>{
-                if(this.state.data[0]==null)
+                if(this.state.data==null)
                     this.firstList();
                 this.setState({listId:this.state.data[0].id})
             }
         });        
     }
 
-    getListArray(){
+    getItemsArray(){
         let arr = [];
         if(this.state.data!=null){
             for(let key in this.state.data[this.state.listId]){
@@ -216,6 +226,19 @@ class ToDo extends React.Component {
         return arr;
     }
     
+    getListArray(){
+        let arr = [];
+        if(this.state.data!=null){
+            for(let key in this.state.data){
+                arr.push(this.state.data[key]);
+            }
+        }
+        return arr;
+    }
+
+    selectList(id){
+        this.setState({listId:id});
+    }
 }
 
 ToDo.propTypes = {

@@ -1,5 +1,5 @@
 {
-  "name": "toDo-webApp",
+  "name": "toDoWebApp",
   "version": "1.0.0",
   "description": "",
   "engines": {
@@ -31,7 +31,7 @@
   "author": "Ivan Morett",
   "license": "Apache-2.0",
   "dependencies": {
-    "auth0-js": "9.4.2",
+    "auth0-js": "9.5.1",
     "firebase": "4.13.1",
     "giphy-js-sdk-core": "1.0.3",
     "jquery": "3.3.1",

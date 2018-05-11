@@ -16,6 +16,7 @@ class NewItem extends React.Component{
 
     onSubmit(){
         this.props.newItem(this.state.value);
+        this.setState({value:""});
         return false;
     }
     render(){
@@ -24,7 +25,7 @@ class NewItem extends React.Component{
                 <form className='item' onSubmit={this.onSubmit} action="#">
                     <input type='text' value={this.state.value} onChange={this.onChange}/>
                     <div className="button-group">
-                        <button type="button" className="btn btn--success btn--inside" onClick={()=>this.props.newItem(this.state.value)}>New Item</button>
+                        <button type="button" className="btn btn--success btn--inside" onClick={this.onSubmit}>New Item</button>
                     </div>
                 </form>
             </div>
