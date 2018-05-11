@@ -1,5 +1,9 @@
 body, html, #app, .fullHeight {
-  height: 100% !important;
+  min-width: 100%;
+  min-height: 100%;
+  
+  bottom:0;
+  background-size: cover;
 }
 
 .bg {
@@ -8,7 +12,11 @@ body, html, #app, .fullHeight {
   -moz-background-size: cover;
   -o-background-size: cover;
   background-size: cover;
+  position:fixed;
+  top:0;
+  left:0;
   height: 100%;
+  width:100%;
 }
 
 
